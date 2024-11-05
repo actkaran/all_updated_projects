@@ -1,11 +1,16 @@
-import json, time, subprocess, pymysql.cursors
+import json
+import subprocess
+import time
+import pymysql.cursors
 from datetime import datetime, timedelta
-import db_configs as db
-
+from openpyxl import Workbook
+import myteam11_bot.DB_CONFIG as db
 while True:
     # Establish a connection to the database
-    con = pymysql.connect(user=db.db_user, host=db.db_host, password=db.db_password, database=db.db_name,
-                          cursorclass=pymysql.cursors.DictCursor)
+    con = pymysql.connect(user=db.DB_USER, host=db.DB_HOST, password=db.DB_PASS, database=db.DB_NAME,
+                          cursorclass=pymysql.cursors.DictCursor
+                          )
+
 
     try:
         # Current time
@@ -36,7 +41,7 @@ while True:
                 print(cutoff_end_time_str)
                 # Write your query
                 sql = f"""
-                       SELECT * FROM {db.match}
+                       SELECT * FROM {db.MATCH}
                        WHERE STR_TO_DATE(match_start_datetime, '%%Y-%%m-%%d %%H:%%i:%%s') BETWEEN %s AND %s
                        """
 
@@ -47,16 +52,22 @@ while True:
                     if description == '1M':
                         print("scraperrrrrrrrrrrr calling")
                         subprocess.run([
-                            "python", "-m", "contests", json.dumps(results[0]), description
+                            'python', '-m', 'scrapy', 'crawl', 'myteam11_contests',
+                            '-a', f'time_frame={description}',
+                            '-a', f'matches={json.dumps(results)}'
                         ])
                         time.sleep(45)
                         subprocess.run([
-                            "python", "-m", "contests", json.dumps(results[0]), '15S'
+                            'python', '-m', 'scrapy', 'crawl', 'myteam11_contests',
+                            '-a', f'time_frame=15S',
+                            '-a', f'matches={json.dumps(results)}'
                         ])
                     else:
                         print("scraperrrrrrrrrrrr calling")
                         subprocess.run([
-                          "python", "-m", "contests", json.dumps(results[0]), description
+                            'python', '-m', 'scrapy', 'crawl', 'myteam11_contests',
+                            '-a', f'time_frame={description}',
+                            '-a', f'matches={json.dumps(results)}'
                         ])
 
     except Exception as e:

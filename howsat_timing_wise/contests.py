@@ -6,14 +6,6 @@ import pymysql.cursors, websocket, json, sys, random
 
 # Define the WebSocket URL
 ws_url = "wss://golobby-www.howzat.com/"
-
-# connection
-con = pymysql.connect(user=db.db_user,
-                      host=db.db_host,
-                      password=db.db_password,
-                      database=db.db_name
-                      )
-cur = con.cursor()
 # -------
 # Define the headers
 ua = ['Dart/3.5 (dart:io)', 'Dart/3.4 (dart:io)', 'Dart/3.3 (dart:io)', 'Dart/3.2 (dart:io)', 'Dart/3.1 (dart:io)',
@@ -80,7 +72,7 @@ def match_data_scraper(response, metadata):
                     if abc["tranch"] == 3:
                         metadata['third_price'] = abc["amount"]
             metadata['max_teams_per_user'] = contest_info2['teamsAllowed']
-            metadata['record_time'] = str(datetime.now())
+            metadata['record_time'] = str(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             metadata['match_format'] = 'N/A'
             metadata['contest_guarantee'] = 0 if contest_info2["guaranteed"] == False else 1
             metadata['tab'] = 'N/A'
@@ -127,7 +119,7 @@ def match_details_request(metadata):
 
 # custom functions...........
 def insert_data(item):
-    cur.execute(f"""
+    db.ovh_cur.execute(f"""
     CREATE TABLE IF NOT EXISTS {db.contest} (
     main_tab_sport VARCHAR(50),
     match_id VARCHAR(50),
@@ -139,14 +131,14 @@ def insert_data(item):
     tour_name VARCHAR(100),
     match_start_datetime VARCHAR(300),
     contest_description TEXT,
-    record_time DATETIME,
+    record_time VARCHAR(200),
     match_format VARCHAR(50),
-    tab VARCHAR(50),
+    tab VARCHAR(100),
     winner_percent VARCHAR(100),
     first_prize VARCHAR(100),
     second_price VARCHAR(100),
     third_price VARCHAR(100),
-    contest_id VARCHAR(50) PRIMARY KEY,
+    contest_id VARCHAR(100),
     entry_fee VARCHAR(10),
     max_spots INT,
     total_spots_filled INT,
@@ -162,8 +154,8 @@ def insert_data(item):
         cols = ", ".join(item.keys()).strip(', ')
         values = tuple(item.values())
         insert = f"""INSERT INTO {db.contest} ({cols}) VALUES {values}"""
-        cur.execute(insert)
-        con.commit()
+        db.ovh_cur.execute(insert)
+        db.ovh_con.commit()
         print('inserted')
     except Exception as e:
         print(e)
@@ -180,14 +172,3 @@ if __name__ == "__main__":
 
     # calling contest scraper function...
     match_details_request(data)
-    # after that file generation function called...
-    st = str(datetime.now().strftime("%Y%m%d_%H_%M_%S"))
-    df = pandas.read_sql(f'select * from {db.contest}', con)
-    a_id = range(1, len(df) + 1)
-    df.insert(0, column='Id', value=a_id)
-    excel_file_path = fr'{db.tp2}{time_frame}'
-    if not os.path.exists(excel_file_path):
-        os.makedirs(excel_file_path)
-    final_excel_path = f'{excel_file_path}\\Howsat_{st}.xlsx'
-    df.to_excel(final_excel_path, engine='openpyxl', index=False)
-    print("File generated...", final_excel_path)
