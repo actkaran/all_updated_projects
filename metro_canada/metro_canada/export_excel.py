@@ -14,3 +14,5 @@ def clean_price_per_unit(unit):
 df = pandas.read_sql(f'SELECT * FROM {db.db_data_table};', con)
 df["price_per_unit"] = df["price_per_unit"].apply(clean_price_per_unit)
 df.fillna("NA", inplace=True)
+df.to_excel("metro_canada_full.xlsx", engine='openpyxl', index=False)
+print("file generated successfully...")
