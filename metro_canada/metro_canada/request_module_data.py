@@ -120,8 +120,10 @@ if __name__ == "__main__":
     # this is local system's connection...
     con = pymysql.connect(user=db.db_user, host=db.db_host, password=db.db_password, database=db.db_name)
     cur = con.cursor()
-    cur.execute(f"SELECT * FROM {db.db_link_table} WHERE url LIKE '%/p/%' AND status='saved' LIMIT 1000;")
+    # cur.execute(f"SELECT * FROM {db.db_link_table} WHERE url LIKE '%/p/%' AND status='pending' LIMIT 0, 100;")
+    cur.execute(f"SELECT * FROM {db.db_link_table} WHERE url LIKE '%/p/%' AND status='pending';")
     data = cur.fetchall()
+    # print("fetched", data)
     for i in data:
         url = i[1]
         id = i[0]
@@ -129,8 +131,10 @@ if __name__ == "__main__":
         if temp_var["status"] == 200:
             save_page(temp_var["response"], id)
             scrape_data(temp_var["response"], url, id)
-            # tim = random.choice([3.12, 2.76])
-            time.sleep(1.2)
+            # time.sleep(1.2)
+        elif temp_var["status"] == 429:
+            time.sleep(1.7)
+            print("too many request...")
         else:
             print(temp_var["status"])
         # break
