@@ -1,4 +1,4 @@
-# Scrapy settings for fantasy_timing_wise project
+# Scrapy settings for fantasy_akhada project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -7,14 +7,14 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = "fantasy_timing_wise"
+BOT_NAME = "fantasy_akhada"
 
-SPIDER_MODULES = ["fantasy_timing_wise.spiders"]
-NEWSPIDER_MODULE = "fantasy_timing_wise.spiders"
+SPIDER_MODULES = ["fantasy_akhada.spiders"]
+NEWSPIDER_MODULE = "fantasy_akhada.spiders"
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = "fantasy_timing_wise (+http://www.yourdomain.com)"
+#USER_AGENT = "fantasy_akhada (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -45,13 +45,13 @@ ROBOTSTXT_OBEY = False
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    "fantasy_timing_wise.middlewares.FantasyAkhadaSpiderMiddleware": 543,
+#    "fantasy_akhada.middlewares.FantasyAkhadaSpiderMiddleware": 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    "fantasy_timing_wise.middlewares.FantasyAkhadaDownloaderMiddleware": 543,
+#    "fantasy_akhada.middlewares.FantasyAkhadaDownloaderMiddleware": 543,
 #}
 
 # Enable or disable extensions
@@ -63,7 +63,7 @@ ROBOTSTXT_OBEY = False
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   "fantasy_timing_wise.pipelines.FantasyAkhadaPipeline": 300,
+   "fantasy_akhada.pipelines.FantasyAkhadaPipeline": 300,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -91,3 +91,19 @@ ITEM_PIPELINES = {
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+# for logging the files.........
+from datetime import datetime
+current_t = str(datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+
+# Log level (can be: CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET)
+LOG_LEVEL = 'DEBUG'
+
+# Log file location (you can specify an absolute or relative path)
+LOG_FILE = f'logs/log_{current_t}.log'
+
+# Optionally, you can define the log format
+LOG_FORMAT = '%(asctime)s [%(name)s] %(levelname)s: %(message)s'
+
+
+# Log expiration (optional)
+LOG_EXPIRES = 30  # Keep logs for 7 days (delete after 7 days)

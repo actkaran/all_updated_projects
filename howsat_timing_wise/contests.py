@@ -2,7 +2,18 @@ import os
 from datetime import datetime
 import pandas
 import db_configs as db
-import pymysql.cursors, websocket, json, sys, random
+import pymysql.cursors
+import websocket, json, sys, random, logging
+
+
+# Configure logging
+log_file_name = str(datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+logging.basicConfig(
+    filename=f"logs\contest_log_{log_file_name}.log",
+    filemode="w",
+    level=logging.DEBUG,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 # Define the WebSocket URL
 ws_url = "wss://golobby-www.howzat.com/"
@@ -27,59 +38,61 @@ ws = websocket.create_connection(ws_url, header=headers)
 
 
 def match_data_scraper(response, metadata):
-    print(response)
-    response = json.loads(response)
-    if response['data']['l1']['contests']:
-        for contest_info in response['data']['l1']['contests']:
-            metadata['contest_id'] = contest_info['id']
-            metadata['contest_name'] = contest_info["brand"]["info"]
-            metadata['total_prize_amount'] = contest_info['prizeDetails'][0]['totalPrizeAmount']
-            metadata['entry_fee'] = contest_info['entryFee']
-            metadata['max_spots'] = contest_info['size']
-            metadata['total_spots_filled'] = contest_info['joined']
-            metadata['winner'] = contest_info['prizeDetails'][0]['noOfPrizes']
-            metadata['winner_percent'] = round((metadata['winner'] / metadata['max_spots']) * 100, 2)
-            metadata['first_prize'] = contest_info['prizeDetails'][0]['firstPrizeAmt']
-            if metadata["first_prize"] == 0:
-                metadata["first_prize"] = contest_info["whiteGoodsInfo"][0]["brand"]
-            metadata['max_teams_per_user'] = contest_info['teamsAllowed']
-            metadata['record_time'] = str(datetime.now())
-            metadata['match_format'] = 'N/A'
-            metadata['contest_guarantee'] = 0 if contest_info["guaranteed"] == False else 1
-            metadata['tab'] = 'N/A'
-            metadata['main_tab_sport'] = 'N/A'
-            # print(metadata)
-            insert_data(metadata)
-    if response['data']['l1']['template']:
-        for contest_info2 in response['data']['l1']['template']:
-            metadata['contest_id'] = contest_info2['id']
-            metadata['contest_name'] = contest_info2["brand"]["info"]
-            metadata['total_prize_amount'] = contest_info2['prizeDetails'][0]['totalPrizeAmount']
-            metadata['entry_fee'] = contest_info2['entryFee']
-            metadata['max_spots'] = contest_info2['size']
-            metadata['total_spots_filled'] = contest_info2['joined']
-            metadata['winner'] = contest_info2['prizeDetails'][0]['noOfPrizes']
-            metadata['winner_percent'] = round((metadata['winner'] / metadata['max_spots']) * 100, 2)
-            metadata["first_prize"] = "N/A"
-            metadata["second_price"] = "N/A"
-            metadata["third_price"] = "N/A"
-            if contest_info2["prizeStructures"]:
-                for abc in contest_info2["prizeStructures"]:
-                    if abc["tranch"] == 1:
-                        metadata['first_prize'] = abc["amount"]
-                    if abc["tranch"] == 2:
-                        metadata['second_price'] = abc["amount"]
-                    if abc["tranch"] == 3:
-                        metadata['third_price'] = abc["amount"]
-            metadata['max_teams_per_user'] = contest_info2['teamsAllowed']
-            metadata['record_time'] = str(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-            metadata['match_format'] = 'N/A'
-            metadata['contest_guarantee'] = 0 if contest_info2["guaranteed"] == False else 1
-            metadata['tab'] = 'N/A'
-            metadata['main_tab_sport'] = 'N/A'
-            # print(metadata)
-            # I made the function separate to insert the data of metadata
-            insert_data(metadata)
+    try:
+        response = json.loads(response)
+        if response['data']['l1']['contests']:
+            for contest_info in response['data']['l1']['contests']:
+                metadata['contest_id'] = contest_info['id']
+                metadata['contest_name'] = contest_info["brand"]["info"]
+                metadata['total_prize_amount'] = contest_info['prizeDetails'][0]['totalPrizeAmount']
+                metadata['entry_fee'] = contest_info['entryFee']
+                metadata['max_spots'] = contest_info['size']
+                metadata['total_spots_filled'] = contest_info['joined']
+                metadata['winner'] = contest_info['prizeDetails'][0]['noOfPrizes']
+                metadata['winner_percent'] = round((metadata['winner'] / metadata['max_spots']) * 100, 2)
+                metadata['first_prize'] = contest_info['prizeDetails'][0]['firstPrizeAmt']
+                if metadata["first_prize"] == 0:
+                    metadata["first_prize"] = contest_info["whiteGoodsInfo"][0]["brand"]
+                metadata['max_teams_per_user'] = contest_info['teamsAllowed']
+                metadata['record_time'] = str(datetime.now())
+                metadata['match_format'] = 'N/A'
+                metadata['contest_guarantee'] = 0 if contest_info["guaranteed"] == False else 1
+                metadata['tab'] = 'N/A'
+                metadata['main_tab_sport'] = 'N/A'
+                # print(metadata)
+                insert_data(metadata)
+        if response['data']['l1']['template']:
+            for contest_info2 in response['data']['l1']['template']:
+                metadata['contest_id'] = contest_info2['id']
+                metadata['contest_name'] = contest_info2["brand"]["info"]
+                metadata['total_prize_amount'] = contest_info2['prizeDetails'][0]['totalPrizeAmount']
+                metadata['entry_fee'] = contest_info2['entryFee']
+                metadata['max_spots'] = contest_info2['size']
+                metadata['total_spots_filled'] = contest_info2['joined']
+                metadata['winner'] = contest_info2['prizeDetails'][0]['noOfPrizes']
+                metadata['winner_percent'] = round((metadata['winner'] / metadata['max_spots']) * 100, 2)
+                metadata["first_prize"] = "N/A"
+                metadata["second_price"] = "N/A"
+                metadata["third_price"] = "N/A"
+                if contest_info2["prizeStructures"]:
+                    for abc in contest_info2["prizeStructures"]:
+                        if abc["tranch"] == 1:
+                            metadata['first_prize'] = abc["amount"]
+                        if abc["tranch"] == 2:
+                            metadata['second_price'] = abc["amount"]
+                        if abc["tranch"] == 3:
+                            metadata['third_price'] = abc["amount"]
+                metadata['max_teams_per_user'] = contest_info2['teamsAllowed']
+                metadata['record_time'] = str(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                metadata['match_format'] = 'N/A'
+                metadata['contest_guarantee'] = 0 if contest_info2["guaranteed"] == False else 1
+                metadata['tab'] = 'N/A'
+                metadata['main_tab_sport'] = 'N/A'
+                # print(metadata)
+                # I made the function separate to insert the data of metadata
+                insert_data(metadata)
+    except Exception as e:
+        logging.error(f"scrape function Error: {e}")
 
 
 def match_details_request(metadata):
@@ -157,8 +170,10 @@ def insert_data(item):
         db.ovh_cur.execute(insert)
         db.ovh_con.commit()
         print('inserted')
+        logging.error(f"contest Inserted...{item['contest_id']}")
     except Exception as e:
         print(e)
+        logging.error(f"Failed to insert: {item['contest_id']}. Error: {e}")
 
 
 

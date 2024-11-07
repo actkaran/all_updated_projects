@@ -3,8 +3,17 @@ import subprocess
 import time
 import pymysql.cursors
 from datetime import datetime, timedelta
-from openpyxl import Workbook
 import myteam11_bot.DB_CONFIG as db
+import logging
+
+# Configure logging
+log_file_name = str(datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+logging.basicConfig(
+    filename=f"logs\main_file_{log_file_name}.log",
+    filemode="w",
+    level=logging.DEBUG,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 while True:
     # Establish a connection to the database
     con = pymysql.connect(user=db.DB_USER, host=db.DB_HOST, password=db.DB_PASS, database=db.DB_NAME,
@@ -50,7 +59,7 @@ while True:
                 results = cursor.fetchall()
                 if results:
                     if description == '1M':
-                        print("scraperrrrrrrrrrrr calling")
+                        logging.error(f"Before 1M Match found: {results}")
                         subprocess.run([
                             'python', '-m', 'scrapy', 'crawl', 'myteam11_contests',
                             '-a', f'time_frame={description}',
@@ -63,7 +72,7 @@ while True:
                             '-a', f'matches={json.dumps(results)}'
                         ])
                     else:
-                        print("scraperrrrrrrrrrrr calling")
+                        logging.error(f"Match found: {results}")
                         subprocess.run([
                             'python', '-m', 'scrapy', 'crawl', 'myteam11_contests',
                             '-a', f'time_frame={description}',
@@ -72,3 +81,4 @@ while True:
 
     except Exception as e:
         print(e)
+        logging.error(f"Error: {e}")

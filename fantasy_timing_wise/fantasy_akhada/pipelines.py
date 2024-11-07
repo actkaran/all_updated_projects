@@ -1,6 +1,6 @@
 import pymysql
-from fantasy_timing_wise.items import FaMatchItem, FaContestItem
-import fantasy_timing_wise.DB_CONFIG as db
+from fantasy_akhada.items import FaMatchItem, FaContestItem
+import fantasy_akhada.DB_CONFIG as db
 
 class FantasyAkhadaPipeline:
     def process_item(self, item, spider):
@@ -31,6 +31,9 @@ class FantasyAkhadaPipeline:
                 print('inserted')
             except Exception as e:
                 print(e)
+                self.logger.info(e)
+                self.logger.debug(e)
+                self.logger.error("from match insert pipeline----------------")
 
         if isinstance(item, FaContestItem):
             try:
@@ -71,5 +74,7 @@ class FantasyAkhadaPipeline:
                 print('inserted')
             except Exception as e:
                 print(e)
-
+                self.logger.info(e)
+                self.logger.debug(e)
+                self.logger.error("from contest pipeline----------------")
         return item

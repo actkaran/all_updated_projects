@@ -61,39 +61,45 @@ class Myteam11Contest(scrapy.Spider):
             )
 
     def contest_parse(self, response, **kwargs):
-        data = json.loads(response.text)
-        cf = ContestsData()
-        match_info = kwargs["match_info"]
-        cf['match_id'] = match_info[0]['match_id']
-        cf['main_tab_sport'] = match_info[0]['main_tab_sport']
-        cf['team_1'] = match_info[0]['team_1']
-        cf['team_2'] = match_info[0]['team_2']
-        cf['match_format'] = match_info[0]['match_format']
-        cf['match_start_datetime'] = match_info[0]['match_start_datetime']
-        cf['tour_name'] = match_info[0]['tour_name']
-        cf['tab'] = kwargs["tab"]
-        for t in data['data']['categories']:
-            cf['max_teams_per_user'] = data["data"]["maxTeams"]
-            cf['contest_id'] = t['id']
-            cf['entry_fee'] = round(t['fees'])
-            cf['contest_guarantee'] = "Guaranteed" if t['isGuaranteed'] else "NA"
-            cf['max_spots'] = t["noofMembers"]
-            cf['spots_filled'] = t['totalJoined']
-            cf['winner'] = t["noofWinners"]
-            cf['total_price_amount'] = round(t['winAmount'])
-            cf['contest_description'] = 'NA'
-            cf["winner_percent"] = t['percentageWinners']
-            cf["contest_name"] = t["title"]
-            cf["match_format"] = "NA"
-            cf["tour_id"] = "NA"
-            cf["record_time"] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-            cf["second_prize"] = "NA"
-            cf["third_prize"] = "NA"
-            for y in data["data"]["categories"]:
-                for z in y["leagueInfo"]:
-                    if 'First Prize' in z["tooltip"]:
-                        cf["first_prize"] = z["title"]
-            yield cf
+        try:
+            data = json.loads(response.text)
+            cf = ContestsData()
+            match_info = kwargs["match_info"]
+            cf['match_id'] = match_info[0]['match_id']
+            cf['main_tab_sport'] = match_info[0]['main_tab_sport']
+            cf['team_1'] = match_info[0]['team_1']
+            cf['team_2'] = match_info[0]['team_2']
+            cf['match_format'] = match_info[0]['match_format']
+            cf['match_start_datetime'] = match_info[0]['match_start_datetime']
+            cf['tour_name'] = match_info[0]['tour_name']
+            cf['tab'] = kwargs["tab"]
+            for t in data['data']['categories']:
+                cf['max_teams_per_user'] = data["data"]["maxTeams"]
+                cf['contest_id'] = t['id']
+                cf['entry_fee'] = round(t['fees'])
+                cf['contest_guarantee'] = "Guaranteed" if t['isGuaranteed'] else "NA"
+                cf['max_spots'] = t["noofMembers"]
+                cf['spots_filled'] = t['totalJoined']
+                cf['winner'] = t["noofWinners"]
+                cf['total_price_amount'] = round(t['winAmount'])
+                cf['contest_description'] = 'NA'
+                cf["winner_percent"] = t['percentageWinners']
+                cf["contest_name"] = t["title"]
+                cf["match_format"] = "NA"
+                cf["tour_id"] = "NA"
+                cf["record_time"] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                cf["second_prize"] = "NA"
+                cf["third_prize"] = "NA"
+                for y in data["data"]["categories"]:
+                    for z in y["leagueInfo"]:
+                        if 'First Prize' in z["tooltip"]:
+                            cf["first_prize"] = z["title"]
+                yield cf
+        except Exception as e:
+            self.logger.info(e)
+            self.logger.debug(e)
+            self.logger.error("from contests spider----------------")
+
 
 if __name__ == "__main__":
     execute(f'scrapy crawl {Myteam11Contest.name}'.split())

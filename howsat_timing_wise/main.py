@@ -1,7 +1,17 @@
 import json, time, subprocess, pymysql.cursors
 from datetime import datetime, timedelta
 import db_configs as db
+import logging
 
+
+# Configure logging
+log_file_name = str(datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+logging.basicConfig(
+    filename=f"logs\main_file_{log_file_name}.log",
+    filemode="w",
+    level=logging.DEBUG,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 while True:
     # Establish a connection to the database
     con = pymysql.connect(user=db.db_user, host=db.db_host, password=db.db_password, database=db.db_name,
@@ -45,19 +55,21 @@ while True:
                 results = cursor.fetchall()
                 if results:
                     if description == '1M':
-                        print("scraperrrrrrrrrrrr calling")
+                        logging.error(f"Before 1M Match found: {results[0]}")
                         subprocess.run([
                             "python", "-m", "contests", json.dumps(results[0]), description
                         ])
+
                         time.sleep(45)
                         subprocess.run([
                             "python", "-m", "contests", json.dumps(results[0]), '15S'
                         ])
                     else:
-                        print("scraperrrrrrrrrrrr calling")
+                        logging.error(f"Match found: {results[0]}")
                         subprocess.run([
                           "python", "-m", "contests", json.dumps(results[0]), description
                         ])
 
     except Exception as e:
         print(e)
+        logging.error(f"Error: {e}")

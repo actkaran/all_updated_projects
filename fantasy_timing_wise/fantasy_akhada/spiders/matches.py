@@ -1,18 +1,14 @@
 import json
 from datetime import datetime
 import scrapy
-import fantasy_timing_wise.DB_CONFIG as db
+import fantasy_akhada.DB_CONFIG as db
 import pandas as pd
 from scrapy.cmdline import execute
-
-from fantasy_timing_wise.items import FaMatchItem
+from fantasy_akhada.items import FaMatchItem
 
 
 class FantasySpider(scrapy.Spider):
     name = "matches_fa"
-    # channel_name = '#test-csv'
-    # file_path = r'C:\Users\DELL\Desktop\KARAN\files'
-    # final_file_path_slack = file_path + 'demo_excel.xlsx'
 
     def start_requests(self):
         dic = [
@@ -52,22 +48,24 @@ class FantasySpider(scrapy.Spider):
 
     def parse(self, response, **kwargs):
         temp = FaMatchItem()
-        temp["sport_id"] = kwargs["sport_id"]
-        jd = json.loads(response.text)
-        for x in jd:
-            temp["main_tab_sport"] = kwargs["sports"]
-            temp["match_id"] = x["collection_master_id"]
-            temp['season_scheduled_date'] = x["season_scheduled_date"]
-            temp["tour_id"] = x["league_id"]
-            temp["match_name"] = x["collection_name"]
-            temp["team_1"] = x["home"]
-            temp["team_2"] = x["away"]
-            temp["tour_name"] = x["league_name"]
-            temp["match_start_datetime"] = str(datetime.fromtimestamp(x["game_starts_in"] / 1000))
-            yield temp
-
-    # def close(spider):
-    #     sl.send_file(self.channel_name, self.final_file_path_slack)
+        try:
+            temp["sport_id"] = kwargs["sport_id"]
+            jd = json.loads(response.text)
+            for x in jd:
+                temp["main_tab_sport"] = kwargs["sports"]
+                temp["match_id"] = x["collection_master_id"]
+                temp['season_scheduled_date'] = x["season_scheduled_date"]
+                temp["tour_id"] = x["league_id"]
+                temp["match_name"] = x["collection_name"]
+                temp["team_1"] = x["home"]
+                temp["team_2"] = x["away"]
+                temp["tour_name"] = x["league_name"]
+                temp["match_start_datetime"] = str(datetime.fromtimestamp(x["game_starts_in"] / 1000))
+                yield temp
+        except Exception as e:
+            self.logger.info(e)
+            self.logger.debug(e)
+            self.logger.error("----------------")
 
 
 if __name__ == '__main__':

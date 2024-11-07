@@ -4,6 +4,17 @@ import pymysql
 import db_configs as db
 import websocket
 import json
+import logging
+
+# Configure logging
+log_file_name = str(datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+logging.basicConfig(
+    filename=f"logs\match_log_{log_file_name}.log",
+    filemode="w",
+    level=logging.DEBUG,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
 
 # making connection of pymysql to insert matches...
 con = pymysql.connect(user=db.db_user,
@@ -35,8 +46,11 @@ def insert_data(item):
         cur.execute(insert)
         con.commit()
         print('inserted')
+        logging.info(f"Inserted: {item['match_id']}")
     except Exception as e:
         print(e)
+        logging.error(f"Failed to insert: {item['match_id']}. Error: {e}")
+
 
 # Define the WebSocket URL
 ws_url = "wss://golobby-www.howzat.com/"
@@ -62,19 +76,22 @@ ws = websocket.create_connection(ws_url, header=headers)
 
 
 def match_scraper(response):
-    match_details = json.loads(response)
-    for match_detail in match_details:
-        data = dict()
-        data['match_id'] = match_detail['matchId']
-        data['tour_id'] = match_detail['series']['id']
-        data['league_id'] = match_detail['leagueId']
-        data['tour_name'] = match_detail['matchName']
-        tms = match_detail['matchStartTime'] / 1000
-        data['match_start_datetime'] = str(datetime.fromtimestamp(tms))# timestamp
-        data['team_1'] = match_detail['teamA']['name']
-        data['team_2'] = match_detail['teamB']['name']
-        data['match_name'] = f"{data['team_1']} vs {data['team_2']}"
-        insert_data(data)
+    try:
+        match_details = json.loads(response)
+        for match_detail in match_details:
+            data = dict()
+            data['match_id'] = match_detail['matchId']
+            data['tour_id'] = match_detail['series']['id']
+            data['league_id'] = match_detail['leagueId']
+            data['tour_name'] = match_detail['matchName']
+            tms = match_detail['matchStartTime'] / 1000
+            data['match_start_datetime'] = str(datetime.fromtimestamp(tms))# timestamp
+            data['team_1'] = match_detail['teamA']['name']
+            data['team_2'] = match_detail['teamB']['name']
+            data['match_name'] = f"{data['team_1']} vs {data['team_2']}"
+            insert_data(data)
+    except Exception as e:
+        logging.error(f"scrap data function Error: {e}")
 
 def get_matches():
     try:

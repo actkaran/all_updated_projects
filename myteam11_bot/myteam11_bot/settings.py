@@ -6,6 +6,7 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+from scrapy.signals import spider_opened
 
 BOT_NAME = "myteam11_bot"
 
@@ -90,3 +91,18 @@ AUTOTHROTTLE_DEBUG = False
 REQUEST_FINGERPRINTER_IMPLEMENTATION = "2.7"
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+# for logging the files.........
+from datetime import datetime
+current_t = str(datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+
+# Log level (can be: CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET)
+LOG_LEVEL = 'DEBUG'
+
+# Log file location (you can specify an absolute or relative path)
+LOG_FILE = f'logs/logs_{current_t}.log'
+
+# Optionally, you can define the log format
+LOG_FORMAT = '%(asctime)s [%(name)s] %(levelname)s: %(message)s'
+
+# Log expiration (optional)
+LOG_EXPIRES = 30  # Keep logs for 7 days (delete after 7 days)

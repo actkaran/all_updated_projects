@@ -30,6 +30,9 @@ class Myteam11BotPipeline:
                 print('inserted')
             except Exception as e:
                 print(e)
+                self.logger.info(e)
+                self.logger.debug(e)
+                self.logger.error("match pipline----------------")
 
         if isinstance(item, ContestsData):
             ovh_cur.execute(f"""
@@ -71,5 +74,8 @@ class Myteam11BotPipeline:
                 print('inserted')
             except Exception as e:
                 print(e)
+                self.logger.info(e)
+                self.logger.debug(e)
+                self.logger.error("contest pipline----------------")
 
         return item

@@ -38,21 +38,25 @@ class MyteamMatch(scrapy.Spider):
             # break
 
     def parse(self, response, **kwargs):
-        data = json.loads(response.text)
-        matches = data.get('Response', {}).get('NotStarted', [])
-        match_item = MatchData()
-        if matches:
-            for match in matches:
-                match_item['match_id'] = match.get('MatchId')
-                match_item['main_tab_sport'] = kwargs['sports']
-                match_item['team_1'] = match.get('TeamName1')
-                match_item['team_2'] = match.get('TeamName2')
-                match_item["match_format"] = match.get('Format')
-                temp_date = datetime.strptime(match.get('StartDate'), "%d-%m-%Y %H:%M:%S")
-                match_item['match_start_datetime'] = temp_date.strftime("%Y-%m-%d %H:%M:%S")
-                match_item['tour_name'] = match.get('RelatedName')
-                yield match_item
-
+        try:
+            data = json.loads(response.text)
+            matches = data.get('Response', {}).get('NotStarted', [])
+            match_item = MatchData()
+            if matches:
+                for match in matches:
+                    match_item['match_id'] = match.get('MatchId')
+                    match_item['main_tab_sport'] = kwargs['sports']
+                    match_item['team_1'] = match.get('TeamName1')
+                    match_item['team_2'] = match.get('TeamName2')
+                    match_item["match_format"] = match.get('Format')
+                    temp_date = datetime.strptime(match.get('StartDate'), "%d-%m-%Y %H:%M:%S")
+                    match_item['match_start_datetime'] = temp_date.strftime("%Y-%m-%d %H:%M:%S")
+                    match_item['tour_name'] = match.get('RelatedName')
+                    yield match_item
+        except Exception as e:
+            self.logger.info(e)
+            self.logger.debug(e)
+            self.logger.error("----------------")
 
 if __name__ == "__main__":
     execute(f'scrapy crawl {MyteamMatch.name}'.split())
