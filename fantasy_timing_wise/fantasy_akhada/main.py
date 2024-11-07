@@ -4,7 +4,7 @@ import time
 import pymysql.cursors
 from datetime import datetime, timedelta
 from openpyxl import Workbook
-import fantasy_akhada.DB_CONFIG as db
+import fantasy_akhada.db_config as db
 import logging
 
 # Configure logging

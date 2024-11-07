@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 import scrapy
-import fantasy_akhada.DB_CONFIG as db
+import fantasy_akhada.db_config as db
 import pandas as pd
 from scrapy.cmdline import execute
 from fantasy_akhada.items import FaMatchItem

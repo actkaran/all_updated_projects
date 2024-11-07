@@ -1,9 +1,8 @@
 *.log
 *.idea
 *__pycache__
-
+esport_api_log
 howsat_timing_wise/db_configs.py
 myteam11_bot/myteam11_bot/DB_CONFIG.py
-fantasy_timing_wise/fantasy_timing_wise/DB_CONFIG.py
 metro_canada/metro_canada/db_config.py
-esport_api_log
+fantasy_timing_wise/fantasy_akhada/db_config.py

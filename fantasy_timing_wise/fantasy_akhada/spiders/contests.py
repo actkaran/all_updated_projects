@@ -6,7 +6,7 @@ import pandas as pd
 from scrapy import Spider
 from scrapy.cmdline import execute
 import json
-import fantasy_akhada.DB_CONFIG as db
+import fantasy_akhada.db_config as db
 from fantasy_akhada.items import FaContestItem
 
 
