@@ -1,6 +1,6 @@
 import pymysql
 from datetime import datetime, timedelta
-import fantasy_akhada.db_config as db
+import fantasy_akhada.configs.db_config as db
 from slack_sdk import WebClient
 
 

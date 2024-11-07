@@ -1,6 +1,5 @@
-import pymysql
 from fantasy_akhada.items import FaMatchItem, FaContestItem
-import fantasy_akhada.db_config as db
+import fantasy_akhada.configs.db_config as db
 
 class FantasyAkhadaPipeline:
     def process_item(self, item, spider):
