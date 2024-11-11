@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Network Response Finder",
+  "version": "1.0",
+  "description": "Find and display network responses based on URL patterns",
+  "permissions": [
+    "webRequest",
+    "activeTab",
+    "debugger",
+    "downloads",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}

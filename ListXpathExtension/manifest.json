@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "XPath Dictionary Finder",
+  "version": "1.0",
+  "description": "Extracts values of elements based on user-provided XPath dictionary on the current page.",
+  "permissions": ["scripting", "activeTab"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}

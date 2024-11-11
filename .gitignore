@@ -1,6 +1,7 @@
 *.log
 *.idea
 *__pycache__
+*.xlsx
 esport_api_log
 howsat_timing_wise/db_configs.py
 myteam11_bot/myteam11_bot/DB_CONFIG.py
