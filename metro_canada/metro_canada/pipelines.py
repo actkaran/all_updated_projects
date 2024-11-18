@@ -65,8 +65,6 @@ class MetroCanadaPipeline:
                 update = f"""UPDATE {db.db_link_table} SET status='Done' WHERE id=%s"""
                 self.cur.execute(update, (temp_id,))
                 self.con.commit()
-            except pymysql.err.IntegrityError:
-                print("Duplicate...")
             except Exception as e:
                 print(e)
 

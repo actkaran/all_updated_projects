@@ -14,7 +14,7 @@ if __name__ == '__main__':
     parts = 5
     spider = 'data'
     start = 0
-    end = 25000
+    end = 28000
 
     for part_number, (part_start, part_end) in enumerate(generate_parts(start, end, parts), 1):
         print(f'start "{spider}_start_{part_start}_end_{part_end}" scrapy crawl {spider} -a start={part_start} -a end={part_end}')

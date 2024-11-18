@@ -99,7 +99,9 @@ def send_req(url):
         'upgrade-insecure-requests': '1',
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36',
     }
-    proxy = {'http':'http://scraperapi:de51e4aafe704395654a32ba0a14494d@proxy-server.scraperapi.com:8001'}
+    # pt = [{'http':f"http://scraperapi:{db.scraper_proxy}@proxy-server.scraperapi.com:8001"},
+    #       {'http': f"http://{db.zyte_proxy_key}:@api.zyte.com:8011"}
+    #       ]
     path = f"{db.PAGESAVE}{id}.html.gz"
     if os.path.exists(path):
         with gzip.open(f"{db.PAGESAVE}{id}.html.gz", 'rb') as f:
@@ -111,7 +113,7 @@ def send_req(url):
             # cookies=cookies,
             headers=headers,
             impersonate=random.choice(["chrome110", "edge99", "safari15_5"]),
-            proxies=proxy
+            proxies={'http':f"http://scraperapi:{db.scraper_proxy}@proxy-server.scraperapi.com:8001"}
         )
         return {"status": response.status_code, 'response': response.content}
 
@@ -136,5 +138,8 @@ if __name__ == "__main__":
             time.sleep(1.7)
             print("too many request...")
         else:
+            if temp_var["status"] == 403:
+                time.sleep(2.7)
+                print(temp_var["status"])
             print(temp_var["status"])
         # break
