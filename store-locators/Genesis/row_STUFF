@@ -1,0 +1,32 @@
+def get_time_string(data):
+    list_time = []
+    for e in data:
+        if "day" in e:
+            match e["day"]:
+                case "MON":
+                    list_time.append(f'Monday:- {e["hour"]}')
+                case "TUE":
+                    list_time.append(f'Tuesday:- {e["hour"]}')
+                case "WED":
+                    list_time.append(f'Wednesday:- {e["hour"]}')
+                case "THU":
+                    list_time.append(f'Thursday:- {e["hour"]}')
+                case "FRI":
+                    list_time.append(f'Friday:- {e["hour"]}')
+                case "SAT":
+                    list_time.append(f'Saturday:- {e["hour"]}')
+                case "SUN":
+                    list_time.append(f'Sunday:- {e["hour"]}')
+                case "THR":
+                    list_time.append(f'Thursday:- {e["hour"]}')
+
+    if list_time:
+        return ' | '.join(list_time)
+
+
+
+-------------------------------------------------
+# if os.path.exists(fr"C:\Users\DELL\Desktop\KARAN\Genesis\Genesis\pagesave\{zip_code}.html"):
+            #     yield scrapy.Request(url=f'file:///C:/Users/DELL/Desktop/KARAN/Genesis/Genesis/pagesave/{zip_code}.html',
+            #                          cb_kwargs=a,callback=self.parse)
+            # else:

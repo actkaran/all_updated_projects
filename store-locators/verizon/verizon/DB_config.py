@@ -1,0 +1,7 @@
+USER = "root"
+HOST = "localhost"
+PASSWORD = "actowiz"
+DATABASE = "verizon"
+DATATABLE = "verizon_data"
+LINKDATA = "verizon_link"
+STATENAME = "state_usa_names"

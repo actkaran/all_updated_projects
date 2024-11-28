@@ -1,0 +1,21 @@
+Query: To see Unique Counts of table.
+----
+"db.data_genesis.distinct("store_no").length"
+----
+Explaination:
+'db.data_genesis.distinct("store_no")' ->This will retun the list of unique store_no.
+what if you want to get the document (dictionary) ? -> "db.data_genesis.aggregate([{"$group":{_id:"$store_no","doc":{"$first":"$$ROOT"}}}])"
+
+######################################################
+
+Query: How to make One table that stores only unique value of another table ?
+-----
+" db.unique_values.insertMany([db.data_genesis.aggregate([{"$group":{_id:"$store_no","doc":{"$first":"$$ROOT"}}}])])"
+
+Explaination:
+if you run above code this will error of "RaneError" becasue this code return cursor object and document(dictionory) of unique data. so you
+can't directly insert that data but instead you can add those document(dictionary) or map those dictinoary into one list and then use
+"insertMany()" function.
+
+Correct Code:
+""

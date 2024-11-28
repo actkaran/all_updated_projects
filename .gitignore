@@ -7,3 +7,8 @@ howsat_timing_wise/db_configs.py
 myteam11_bot/myteam11_bot/DB_CONFIG.py
 metro_canada/metro_canada/db_config.py
 fantasy_timing_wise/fantasy_akhada/configs
+metro_canada/metro_canada/cookie_file.py
+store-locators/Genesis/Genesis/DB_CONFIG.py
+*.html
+*.csv
+*.gz
